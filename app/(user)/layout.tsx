@@ -11,7 +11,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  
   return (
-    <main>{children}</main>
+    <main className='flex flex-col'>{children}</main>
   );
-}
+
+};

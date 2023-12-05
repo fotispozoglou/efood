@@ -12,12 +12,13 @@ services:
       - ./prisma:/app/prisma
       - ./public:/app/public
       - ./components:/app/components
+      - ./config:/app/config
+      - ./actions:/app/actions
     restart: always
     env_file:
       - .env
     ports:
       - 3000:3000
-      - 5555:5555
     networks:
       - efood
     depends_on:

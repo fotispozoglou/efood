@@ -11,14 +11,43 @@ datasource db {
 }
 
 model Product {
-  id    String  @id @default(uuid())
-  name  String
-  price Decimal
+  id          String  @id @default(uuid())
+  name        String
+  price       Decimal
+  description String
+  available   Boolean @default(false)
+  minQuantity Int
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  category   ProductCategory @relation("productCategory", fields: [categoryID], references: [id])
+  categoryID String
+
+  tiers ProductTier[]
+}
+
+model ProductTier {
+  product   Product @relation(fields: [productID], references: [id])
+  productID String
+  tier      Tier    @relation(fields: [tierID], references: [id])
+  tierID    String
+
+  @@id([productID, tierID])
 }
 
 model ProductCategory {
   id   String @id @default(uuid())
   name String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  products Product[] @relation("productCategory")
 }
 
 model Ingredient {
@@ -26,20 +55,38 @@ model Ingredient {
   name  String
   price Decimal
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
   tiers TierIngredient[]
 }
 
 model TierIngredient {
   ingredientID String
-  ingredient  Ingredient @relation( fields: [ ingredientID ], references: [ id ] )
-  tierID  String
-  tier Tier @relation( fields: [ tierID ], references: [ id ] )
-  @@id([ tierID, ingredientID ])
+  ingredient   Ingredient @relation(fields: [ingredientID], references: [id])
+  tierID       String
+  tier         Tier       @relation(fields: [tierID], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  @@id([tierID, ingredientID])
 }
 
 model Tier {
-  id   String @id @default(uuid())
-  name String
+  id                String @id @default(uuid())
+  name              String
+  maximumSelections Int
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
 
   ingredients TierIngredient[]
+  products    ProductTier[]
 }

@@ -1,3 +1,5 @@
+import Header from '@/components/dashboard/layout/header';
+import Navbar from '@/components/dashboard/layout/navbar';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -10,7 +12,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  
   return (
-    <main>{children}</main>
-  )
+    <div className='flex flex-col'>
+      <Header />
+      <main className='flex flex-row p-2'>
+        {/* <Navbar /> */}
+        {children}
+      </main>
+    </div>
+  );
+
 };
