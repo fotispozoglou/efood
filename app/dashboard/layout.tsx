@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
-import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Efood',
-  description: 'Order food online!',
+  description: 'Order food online',
 };
 
 export default function RootLayout({
@@ -11,11 +10,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
-
-}
+    <main>{children}</main>
+  )
+};
