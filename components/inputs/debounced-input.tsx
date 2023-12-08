@@ -27,7 +27,7 @@ export default function DebouncedInput({
   }, [value]);
 
   return (
-    <input {...props} value={value} onChange={e => setValue(e.target.value)} />
+    <input {...props} value={value} placeholder="Search" onChange={e => setValue(e.target.value)} />
   );
 
 };

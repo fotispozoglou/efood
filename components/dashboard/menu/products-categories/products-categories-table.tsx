@@ -5,27 +5,27 @@ import Table from "@/components/tables/table";
 import { Prisma } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
-import ProductsTableItem from "./products-table-item";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { DASHBOARD } from "@/config/config";
+import ProductsCategoriesTableItem from "./products-categories-table-item";
 
-export type ProductsTableProps = {
-  products: Prisma.ProductGetPayload<{}>[];
+export type ProductsCategoriesTableProps = {
+  productsCategories: Prisma.ProductCategoryGetPayload<{}>[];
 };
 
-const columns : ColumnDef< Prisma.ProductGetPayload<{}> >[] = [
+const columns : ColumnDef< Prisma.ProductCategoryGetPayload<{}> >[] = [
   {
     header: '',
     footer: props => props.column.id,
     accessorKey: 'name',
-    accessorFn: row => `${row.name} ${row.price}`,
-    cell: info => <ProductsTableItem data={ info.row.original } />,
+    accessorFn: row => `${row.name}`,
+    cell: info => <ProductsCategoriesTableItem data={ info.row.original } />,
   },
 ];
 
-export default function ProductsTable({ products }: ProductsTableProps) {
+export default function ProductsCategoriesTable({ productsCategories }: ProductsCategoriesTableProps) {
 
   const [ filter, setFilter ] = useState('');
 
@@ -43,7 +43,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
           onChange={ handleFilterChange }
           className="p-2 outline-none bg-gray-50 border rounded-md flex-1"
         />
-        <Link className="flex" href={ `${DASHBOARD.ROUTES.PRODUCTS}/create` }>
+        <Link className="flex" href={ `${DASHBOARD.ROUTES.PRODUCTS_CATEGORIES}/create` }>
           <FontAwesomeIcon
             icon={ faPlus }
             size="xl"
@@ -52,7 +52,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
         </Link>
       </div>
       <Table
-        data={ products }
+        data={ productsCategories }
         columns={ columns }
         options={{
           state: {

@@ -2,6 +2,7 @@
 
 import { CreateProductSchema } from '@/models/products';
 import z from 'zod';
+import prisma from '@/prisma/prisma';
 
 export async function handleCreateProduct( previousState : any, productData : FormData ) {
 
@@ -21,6 +22,27 @@ export async function handleCreateProduct( previousState : any, productData : Fo
 
     console.log( validatedProductFields.error );
 
-  }
+    return {};
+
+  };
+
+  const { name, price, description, available, minQuantity, categoryID } = validatedProductFields.data;
+
+  const createdProduct = await prisma.product.create({
+    data: {
+      name,
+      price: Number( price ),
+      description,
+      available: available == 'true' ? true : false,
+      minQuantity: Number( minQuantity ),
+      category: {
+        connect: {
+          id: categoryID
+        }
+      }
+    }
+  });
+
+  return {};
   
 };

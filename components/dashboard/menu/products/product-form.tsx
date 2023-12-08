@@ -3,13 +3,15 @@
 import { Button } from "@/components/buttons";
 import Input from "@/components/inputs/input";
 import SelectInput from "@/components/inputs/select-input";
+import { Prisma } from "@prisma/client";
 import { useFormState } from "react-dom";
 
 export type ProductFormProps = {
   action : ( prevState: any, formData: FormData ) => Promise<any>;
+  productsCategories : Prisma.ProductCategoryGetPayload<{}>[];
 };
 
-export default function ProductForm({ action } : ProductFormProps) {
+export default function ProductForm({ action, productsCategories } : ProductFormProps) {
 
   const [ state, dispatch ] = useFormState( action, { message: null, errors: {} } );
 
@@ -52,7 +54,7 @@ export default function ProductForm({ action } : ProductFormProps) {
       />
       <SelectInput
         name="categoryID"
-        options={[{ name: "category 1", id: '1' }, { name: "category 2", id: '2' }]}
+        options={ productsCategories }
         label="category"
         errors={[]}
         isMulti={false}

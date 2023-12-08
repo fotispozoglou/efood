@@ -1,6 +1,6 @@
 "use client";
 
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
 import React, { useState } from "react";
@@ -18,17 +18,15 @@ export default function NavGroup({ title, children } : NavGroupProps) {
 
     setExpanded( expanded => !expanded );
 
-    console.log(expanded);
-
-  }
+  };
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row p-2" onClick={ handleToggleExpanded }>
+      <div className="flex flex-row p-2 hover:cursor-pointer" onClick={ handleToggleExpanded }>
         <span>{ title }</span>
         <FontAwesomeIcon
-          icon={ faCaretDown }
-          className="!w-4 !h-4 my-auto ml-auto"
+          icon={ faCaretRight }
+          className={`!w-4 !h-4 my-auto ml-auto transition-transform ${ expanded ? 'rotate-90' : '' }`}
         />
       </div>
       <div className={clsx('flex flex-col h-0 overflow-hidden', { '!h-max': expanded })}>

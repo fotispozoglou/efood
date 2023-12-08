@@ -1,5 +1,4 @@
 import Header from '@/components/dashboard/layout/header';
-import Navbar from '@/components/dashboard/layout/navbar';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -16,8 +15,7 @@ export default function RootLayout({
   return (
     <div className='flex flex-col'>
       <Header />
-      <main className='flex flex-row p-2'>
-        {/* <Navbar /> */}
+      <main className='flex flex-row p-4 px-6'>
         {children}
       </main>
     </div>

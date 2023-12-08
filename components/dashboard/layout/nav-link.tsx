@@ -13,7 +13,7 @@ export type NavLinkProps = {
 export default function NavLink( props : NavLinkProps ) {
 
   return (
-    <Link href={ props.href } className="flex flex-row pl-3 text-slate-700 hover:text-slate-950 transition-colors">
+    <Link href={ props.href } className="flex flex-row pl-3 text-slate-700 hover:text-slate-950 transition-colors hover:bg-slate-100">
       <FontAwesomeIcon
         icon={ props.icon }
         className="!w-[1.5em] !h-[1.5em] my-auto"
