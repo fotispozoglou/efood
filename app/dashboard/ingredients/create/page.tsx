@@ -1,17 +1,19 @@
+import { handleCreateIngredient } from "@/actions/dashboard/ingredients";
 import { handleCreateProduct } from "@/actions/dashboard/products";
+import IngredientForm from "@/components/dashboard/menu/ingredients/ingredient-form";
 import ProductForm from "@/components/dashboard/menu/products/product-form";
 import prisma from '@/prisma/prisma';
 
 export default async function CreateProduct() {
 
-  const productsCategories = await prisma.productCategory.findMany({});
+  const tiers = await prisma.tier.findMany({});
 
   return (
     <div className="flex flex-col w-full">
-      <ProductForm 
+      <IngredientForm 
         loadingText="creating" 
-        productsCategories={ productsCategories } 
-        action={ handleCreateProduct } 
+        tiers={ tiers } 
+        action={ handleCreateIngredient } 
       />
     </div>
   );

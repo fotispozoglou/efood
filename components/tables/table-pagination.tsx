@@ -9,6 +9,8 @@ export default function TablePagination< DataType >( props : TablePaginationProp
   const currentPage = props.table.getState().pagination.pageIndex + 1;
   const totalPages = props.table.getPageCount();
 
+  if ( totalPages <= 1 ) return null;
+
   return (
     <div className="flex items-center gap-2 sticky bottom-0 bg-white/20 backdrop-blur-md p-2">
       <button

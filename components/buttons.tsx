@@ -4,8 +4,10 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import clsx from 'clsx';
-import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { useFormStatus } from "react-dom";
+import { faCheckCircle, faCircleNotch, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { useFormState, useFormStatus } from "react-dom";
+import React from "react";
+import { ActionFn, FormStateStatus } from "@/types/actions";
 
 export type ButtonTheme = 'primary' | 'secondary';
 
@@ -32,28 +34,95 @@ export function IconButton({ icon, text, href } : IconButtonProps) {
 
 export type ButtonProps = {
   children: React.ReactNode;
-  loading ?: boolean;
+  status : FormStateStatus;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-export function Button({ children, className, ...rest }: ButtonProps) {
+export function Button({ children, className, status, ...rest }: ButtonProps) {
 
-  const { pending } = useFormStatus();
+  const { pending, data } = useFormStatus();
 
   return (
-    <button
-      {...rest}
-      className={clsx(
-        'w-max p-2 px-4 bg-gray-100 hover:bg-gray-200 text-black rounded-md font-bold transition-colors',
-        className,
-      )}
-      disabled={pending}
-    >
-      {
-        pending && <FontAwesomeIcon icon={ faCircleNotch } className="animate-spin" />
+    <div className="flex flex-row">
+      <button
+        {...rest}
+        className={clsx(
+          'w-max p-2 px-4 bg-gray-100 hover:bg-gray-200 text-black rounded-md font-bold transition-colors',
+          className,
+        )}
+        disabled={pending}
+      >
+        {
+          pending && <FontAwesomeIcon icon={ faCircleNotch } className="animate-spin" />
+        }
+        {
+          !pending && (
+            <>
+              {children}
+            </>
+          )
+        }
+      </button>
+      { status === FormStateStatus.SUCCESS && <FontAwesomeIcon icon={ faCheckCircle } size="lg" className="text-green-600 ml-2 my-auto" /> }
+      { status === FormStateStatus.ERROR && <FontAwesomeIcon icon={ faTimesCircle } size="lg" className="text-red-600 ml-2 my-auto" /> }
+    </div>
+  );
+
+};
+
+export type SubmitButtonProps = {
+  children: React.ReactNode;
+  status : FormStateStatus;
+  loadingText ?: string;
+} & React.ButtonHTMLAttributes<HTMLButtonElement>;
+
+export default function SubmitButton({ children, className, status, loadingText = "submitting", ...rest } : SubmitButtonProps) {
+
+  const { pending, data } = useFormStatus();
+
+  return (
+    <div className="flex flex-row">
+      <button type="submit"
+        {...rest}
+        className={clsx(
+          'w-max p-2 px-4 bg-gray-100 hover:bg-gray-200 text-black rounded-md font-bold transition-colors',
+          className,
+        )}
+        disabled={pending}
+      >{ 
+        pending && (
+          <>
+            <FontAwesomeIcon icon={ faCircleNotch } className="animate-spin mr-2" /> 
+            { loadingText }
+          </>
+        )
       }
-      {
+      { 
         !pending && children
       }
-    </button>
+      </button>
+      { !pending && status === FormStateStatus.SUCCESS && <FontAwesomeIcon icon={ faCheckCircle } size="lg" className="text-green-600 ml-2 my-auto" /> }
+      { !pending && status === FormStateStatus.ERROR && <FontAwesomeIcon icon={ faTimesCircle } size="lg" className="text-red-600 ml-2 my-auto" /> }
+    </div>
   );
-}
+
+};
+
+export type ActionButtonProps = {
+  action : ActionFn<any>; // ( state : any, data : FormData ) => any | Promise< any >;
+  children : React.ReactNode;
+  className ?: string;
+  loadingText ?: string;
+};
+
+export function ActionButton({ action, children, className, loadingText } : ActionButtonProps) {
+
+  const [ state, dispatch ] = useFormState( action, { status : FormStateStatus.UNINITIALIZED } );
+
+  return (
+    <form action={ dispatch }>
+      <SubmitButton status={ state.status } className={ className } loadingText={ loadingText }>{ children }</SubmitButton>
+      {/* <button type="submit" className={ className }>{ children }</button> */}
+    </form>
+  );
+
+};

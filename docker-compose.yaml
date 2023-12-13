@@ -15,6 +15,8 @@ services:
       - ./config:/app/config
       - ./actions:/app/actions
       - ./models:/app/models
+      - ./lib:/app/lib
+      - ./types:/app/types
     restart: always
     env_file:
       - .env

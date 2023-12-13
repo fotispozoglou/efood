@@ -14,7 +14,7 @@ export default function Navbar({ open, onClose } : NavbarProps) {
 
   return (
     <div 
-      className={`flex flex-col fixed w-screen h-screen top-0 left-0 z-10 bg-black/40 transition-[left] ${ open ? 'left-0' : '-left-full' }`} 
+      className={`flex flex-col fixed w-screen h-screen top-0 z-10 bg-black/40 transition-[left] ${ open ? 'left-0' : '-left-full' }`} 
       onClick={ onClose }
       >
       <div className="bg-white w-max h-full overflow-scroll" onClick={e => e.stopPropagation()}>

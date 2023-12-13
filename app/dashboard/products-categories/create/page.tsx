@@ -5,7 +5,7 @@ export default async function CreateProductCategory() {
 
   return (
     <div className="flex flex-col w-full">
-      <ProductCategoryForm action={ handleCreateProductCategory } />
+      <ProductCategoryForm action={ handleCreateProductCategory } loadingText="creating" />
     </div>
   );
 
