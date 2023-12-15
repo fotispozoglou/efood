@@ -1,8 +1,7 @@
 import IngredientsTable from "@/components/dashboard/menu/ingredients/ingredients-table";
-import ProductsTable from "@/components/dashboard/menu/products/products-table";
 import prisma from '@/prisma/prisma';
 
-export default async function DashboardProducts() {
+export default async function DashboardIngredients() {
 
   const ingredients = await prisma.ingredient.findMany({});
 

@@ -5,13 +5,13 @@ import IngredientForm from '@/components/dashboard/menu/ingredients/ingredient-f
 import ProductForm from '@/components/dashboard/menu/products/product-form';
 import prisma from '@/prisma/prisma';
 
-export type UpdateProductProps = {
+export type UpdateIngredientProps = {
   params : {
     id : string;
   }
 };
 
-export default async function UpdateProduct({ params } : UpdateProductProps) {
+export default async function UpdateIngredient({ params } : UpdateIngredientProps) {
 
   const id = params.id;
 

@@ -1,4 +1,4 @@
-import { handleCreateProduct } from "@/actions/dashboard/products";
+import { createProduct, handleCreateProduct } from "@/actions/dashboard/products";
 import ProductForm from "@/components/dashboard/menu/products/product-form";
 import prisma from '@/prisma/prisma';
 
@@ -11,7 +11,7 @@ export default async function CreateProduct() {
       <ProductForm 
         loadingText="creating" 
         productsCategories={ productsCategories } 
-        action={ handleCreateProduct } 
+        action={ createProduct } 
       />
     </div>
   );

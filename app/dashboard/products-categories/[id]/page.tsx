@@ -1,4 +1,4 @@
-import { deleteProductCategory, handleUpdateProductCategory } from '@/actions/dashboard/products-categories';
+import { deleteProductCategory, handleUpdateProductCategory, updateProductCategory } from '@/actions/dashboard/products-categories';
 import { ActionButton } from '@/components/buttons';
 import ProductCategoryForm from '@/components/dashboard/menu/products-categories/product-category-form';
 import { DASHBOARD } from '@/config/config';
@@ -37,7 +37,7 @@ export default async function UpdateProductCategory({ params } : UpdateProductCa
       { 
         productCategory && (
           <div className='flex flex-col w-full'>
-            <ProductCategoryForm action={ handleUpdateProductCategory } productCategory={ productCategory } submitText="update" />
+            <ProductCategoryForm action={ updateProductCategory } productCategory={ productCategory } submitText="update" />
             <ActionButton 
               action={ deleteProductCategory.bind(null, id) } 
               className="uppercase mt-4 bg-red-700 p-2 px-6 hover:bg-red-800 font-bold text-sm text-white rounded-md transition-colors"

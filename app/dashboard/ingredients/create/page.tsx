@@ -1,10 +1,10 @@
-import { handleCreateIngredient } from "@/actions/dashboard/ingredients";
+import { createIngredient, handleCreateIngredient } from "@/actions/dashboard/ingredients";
 import { handleCreateProduct } from "@/actions/dashboard/products";
 import IngredientForm from "@/components/dashboard/menu/ingredients/ingredient-form";
 import ProductForm from "@/components/dashboard/menu/products/product-form";
 import prisma from '@/prisma/prisma';
 
-export default async function CreateProduct() {
+export default async function CreateIngredient() {
 
   const tiers = await prisma.tier.findMany({});
 
@@ -13,7 +13,7 @@ export default async function CreateProduct() {
       <IngredientForm 
         loadingText="creating" 
         tiers={ tiers } 
-        action={ handleCreateIngredient } 
+        action={ createIngredient } 
       />
     </div>
   );
