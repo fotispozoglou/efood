@@ -5,18 +5,22 @@ import Errors from "./errors";
 export type BaseOption = {
   id : string | number;
   name : string;
-}
+};
 
-export type SelectInputProps< OptionType extends BaseOption, Multi extends boolean > = {
+type TrueT = true;
+type FalseT = false;
+
+export type SelectInputProps< OptionType extends BaseOption, Multi extends TrueT | FalseT > =
+{
+  isMulti : Multi;
+  defaultValue ?: any;
+  components ?: SelectComponentsConfig<OptionType, Multi, GroupBase<OptionType>>;
+  styles ?: StylesConfig< OptionType, Multi >;
   name : string;
   label : string;
-  defaultValue ?: OptionType;
   errors : string[];
-  components?: SelectComponentsConfig<OptionType, Multi, GroupBase<OptionType>>;
   options : OptionType[];
-  isMulti: Multi;
   menuIsOpen ?: boolean;
-  styles ?: StylesConfig< OptionType, Multi >;
   selectClassName ?: string;
   className ?: string;
 };
@@ -35,8 +39,6 @@ export default function SelectInput< OptionType extends BaseOption, Multi extend
   className
 }: SelectInputProps< OptionType, Multi > ) {
 
-  const [ defaultOption ] = useState( options.find( option => option.id === defaultValue?.id ) );
-
   return (
     <div className={`flex flex-col w-full ${ className }`}>
       <label htmlFor={ name } className="text-sm font-bold pb-1">{ label }</label>
@@ -45,7 +47,7 @@ export default function SelectInput< OptionType extends BaseOption, Multi extend
         instanceId={ name }
         options={ options }
         isMulti={ isMulti }
-        defaultValue={ defaultOption || options[0] }
+        defaultValue={ defaultValue }
         getOptionLabel={item => item.name}
         getOptionValue={item => String(item.id)}
         components={ components }

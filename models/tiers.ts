@@ -9,13 +9,11 @@ export const BaseTierSchema = z.object({
 });
 
 export const CreateTierSchema = BaseTierSchema.extend({
-  // categoryID: z.string().min(1, 'category is required'),
-  // tiersIDS: z.string().optional()
+  ingredients: z.string().uuid().array()
 });
 
 export const UpdateTierSchema = BaseTierSchema.extend({
-  // categoryID: z.string().min(1, 'category is required'),
-  // tiersIDS: z.string().optional()
+  ingredients: z.string().uuid().array()
 }).merge( HasUUID );
 
 export type CreateTierSchemaType = z.infer< typeof CreateTierSchema >;

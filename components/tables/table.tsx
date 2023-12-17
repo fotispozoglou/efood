@@ -36,7 +36,7 @@ export default function Table< DataType >({
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    debugTable: true,
+    // debugTable: true,
     ...options,
   });
 

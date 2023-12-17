@@ -16,8 +16,17 @@ export default async function UpdateTier({ params } : UpdateTierProps) {
   const tier = await prisma.tier.findUnique({
     where: {
       id
+    },
+    include: {
+      ingredients: {
+        include: {
+          ingredient: true
+        }
+      }
     }
   });
+
+  const ingredients = await prisma?.ingredient.findMany({});
 
   return (
     <div className='flex flex-row w-full'>
@@ -29,6 +38,7 @@ export default async function UpdateTier({ params } : UpdateTierProps) {
               submitText="update" 
               loadingText="updating"
               tier={ tier }
+              ingredients={ ingredients }
             />
             <ActionButton 
               action={ deleteTier.bind(null, id) } 

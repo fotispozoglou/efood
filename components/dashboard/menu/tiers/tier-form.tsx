@@ -2,6 +2,7 @@
 
 import SubmitButton, { Button } from "@/components/buttons";
 import Input from "@/components/inputs/input";
+import SelectInput from "@/components/inputs/select-input";
 import useToast from "@/hooks/useToast";
 import { ActionFn, CreateTierFormState, FormStateStatus } from "@/types/actions";
 import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
@@ -12,12 +13,13 @@ import { useFormState } from "react-dom";
 
 export type TierFormProps = {
   action : ActionFn< CreateTierFormState >;
-  tier ?: Prisma.TierGetPayload<{}>;
+  tier ?: Prisma.TierGetPayload<{ include: { ingredients: { include: { ingredient: true } } } }>;
+  ingredients : Prisma.IngredientGetPayload<{}>[];
   submitText ?: string;
   loadingText : string;
 };
 
-export default function TierForm({ action, tier, loadingText, submitText = "create" } : TierFormProps) {
+export default function TierForm({ action, tier, loadingText, ingredients, submitText = "create" } : TierFormProps) {
 
   const [ state, dispatch ] = useFormState< CreateTierFormState, FormData >( 
     action, 
@@ -45,8 +47,16 @@ export default function TierForm({ action, tier, loadingText, submitText = "crea
         name="maximum_selections"
         type="text"
         label="maximum selection"
-        value={ String(tier?.maximumSelections) ?? '' }
+        value={ String(tier?.maximumSelections ?? '') }
         placeholder="maximum selection"
+      />
+      <SelectInput
+        name="ingredients"
+        options={ ingredients ?? [] }
+        defaultValue={ tier ? tier.ingredients.map(i => i.ingredient) : null }
+        label="ingredients"
+        errors={ [] }
+        isMulti={ true }
       />
       <SubmitButton 
         className="transition-colors w-max p-2 px-6 bg-gray-700 hover:bg-gray-800 text-white rounded-md uppercase font-bold text-sm" 

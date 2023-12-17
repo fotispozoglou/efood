@@ -18,6 +18,7 @@ export async function handleCreateTier(
   const validatedTierFields = CreateTierSchema.safeParse({
     name: tierData.get('name') as string,
     maximumSelections: tierData.get('maximum_selections') as string,
+    ingredients: tierData.getAll("ingredients")
   });
 
   if ( !validatedTierFields.success ) {
@@ -31,13 +32,17 @@ export async function handleCreateTier(
 
   };
 
-  const { name, maximumSelections } = validatedTierFields.data;
+  const { name, maximumSelections, ingredients } = validatedTierFields.data;
 
   const createdTier = await prisma.tier.create({
     data: {
       name,
       maximumSelections: Number( maximumSelections ),
     }
+  });
+
+  await prisma.tierIngredient.createMany({
+    data: ingredients.map(ingredient => ({ ingredientID: ingredient, tierID: createdTier.id }))
   });
 
   revalidatePath( DASHBOARD.ROUTES.TIERS );
