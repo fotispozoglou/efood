@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import '../globals.css';
+import Providers from './providers'
 
 export const metadata: Metadata = {
   title: 'Efood',
@@ -13,7 +14,9 @@ export default function RootLayout({
 }) {
   
   return (
-    <main className='flex flex-col'>{children}</main>
+    <Providers>
+      <main className='flex flex-col'>{children}</main>
+    </Providers>
   );
 
 };

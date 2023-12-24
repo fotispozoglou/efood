@@ -13,12 +13,12 @@ export const BaseProductSchema = z.object({
 
 export const CreateProductSchema = BaseProductSchema.extend({
   categoryID: z.string().min(1, 'category is required'),
-  tiersIDS: z.string().optional()
+  tiersIDS: z.array( z.string() ).optional()
 });
 
 export const UpdateProductSchema = BaseProductSchema.extend({
   categoryID: z.string().min(1, 'category is required'),
-  tiersIDS: z.string().optional()
+  tiersIDS: z.array( z.string() ).optional()
 }).merge( HasUUID );
 
 export type CreateProductSchemaType = z.infer< typeof CreateProductSchema >;

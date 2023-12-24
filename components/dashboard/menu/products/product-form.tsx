@@ -3,6 +3,7 @@
 import SubmitButton, { Button } from "@/components/buttons";
 import Input from "@/components/inputs/input";
 import SelectInput from "@/components/inputs/select-input";
+import useToast from "@/hooks/useToast";
 import { ActionFn, CreateProductFormState, FormStateStatus } from "@/types/actions";
 import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,13 +14,14 @@ import { toast } from "react-toastify";
 
 export type ProductFormProps = {
   action : ActionFn< CreateProductFormState >;
-  product ?: Prisma.ProductGetPayload<{}>;
+  product ?: Prisma.ProductGetPayload<{ include: { tiers: { include: { tier: true } } } }>;
   submitText ?: string;
+  tiers : Prisma.TierGetPayload<{}>[];
   productsCategories : Prisma.ProductCategoryGetPayload<{}>[];
   loadingText : string;
 };
 
-export default function ProductForm({ action, productsCategories, product, loadingText, submitText = "create" } : ProductFormProps) {
+export default function ProductForm({ action, productsCategories, product, tiers, loadingText, submitText = "create" } : ProductFormProps) {
 
   const [ state, dispatch ] = useFormState< CreateProductFormState, FormData >( 
     action, 
@@ -31,29 +33,7 @@ export default function ProductForm({ action, productsCategories, product, loadi
     } 
   );
 
-  useEffect(() => {
-
-    if ( state.status != FormStateStatus.UNINITIALIZED ) {
-
-      if ( state.status === FormStateStatus.SUCCESS ) {
-        
-        toast.success( state.message, { 
-          icon: <FontAwesomeIcon icon={ faCheckCircle } size="lg" className="text-green-500" /> 
-        });
-
-      }
-
-      if ( state.status === FormStateStatus.ERROR ) {
-        
-        toast.error( state.message, { 
-          icon: <FontAwesomeIcon icon={ faTimesCircle } size="lg" className="text-red-500" /> 
-        });
-
-      }
-
-    }
-
-  }, [ state ]);
+  useToast({ state });
 
   return (
     <form action={ dispatch } className="w-full flex flex-col gap-4">
@@ -100,6 +80,14 @@ export default function ProductForm({ action, productsCategories, product, loadi
         label="category"
         errors={[]}
         isMulti={false}
+      />
+      <SelectInput
+        name="tiersIDS"
+        options={ tiers }
+        label="tiers"
+        errors={[]}
+        defaultValue={ product?.tiers.map(t => t.tier) ?? [] }
+        isMulti={true}
       />
       <SubmitButton 
         className="transition-colors w-max p-2 px-6 bg-gray-700 hover:bg-gray-800 text-white rounded-md uppercase font-bold text-sm" 

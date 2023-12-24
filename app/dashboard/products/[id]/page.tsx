@@ -16,10 +16,18 @@ export default async function UpdateProduct({ params } : UpdateProductProps) {
   const product = await prisma.product.findUnique({
     where: {
       id
+    },
+    include: {
+      tiers: {
+        include: {
+          tier: true
+        }
+      }
     }
   });
 
   const productsCategories = await prisma.productCategory.findMany({});
+  const tiers = await prisma.tier.findMany({});
 
   return (
     <div className='flex flex-row w-full'>
@@ -31,6 +39,7 @@ export default async function UpdateProduct({ params } : UpdateProductProps) {
               submitText="update" 
               loadingText="updating" 
               product={ product } 
+              tiers={ tiers }
               productsCategories={ productsCategories } 
             />
             <ActionButton 

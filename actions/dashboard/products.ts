@@ -22,7 +22,8 @@ export async function handleCreateProduct(
     available: productData.get('available') as string,
     minQuantity: productData.get('min_quantity') as string,
 
-    categoryID: productData.get('categoryID') as string
+    categoryID: productData.get('categoryID') as string,
+    tiersIDS: productData.getAll('tiersIDS')
   });
 
   if ( !validatedProductFields.success ) {
@@ -36,7 +37,7 @@ export async function handleCreateProduct(
 
   };
 
-  const { name, price, description, available, minQuantity, categoryID } = validatedProductFields.data;
+  const { name, price, description, available, minQuantity, categoryID, tiersIDS = [] } = validatedProductFields.data;
 
   const createdProduct = await prisma.product.create({
     data: {
@@ -49,6 +50,9 @@ export async function handleCreateProduct(
         connect: {
           id: categoryID
         }
+      },
+      tiers: {
+        create: tiersIDS.map(tid => ({ tierID: tid }))
       }
     }
   });
@@ -77,7 +81,8 @@ export async function handleUpdateProduct(
     available: productData.get('available') as string,
     minQuantity: productData.get('min_quantity') as string,
 
-    categoryID: productData.get('categoryID') as string
+    categoryID: productData.get('categoryID') as string,
+    tiersIDS: productData.getAll('tiersIDS')
   });
 
   if ( !validatedProductFields.success ) {
@@ -91,7 +96,7 @@ export async function handleUpdateProduct(
 
   };
 
-  const { id, name, price, description, available, minQuantity, categoryID } = validatedProductFields.data;
+  const { id, name, price, description, available, minQuantity, categoryID, tiersIDS = [] } = validatedProductFields.data;
 
   const updatedProduct = await prisma.product.update({
     where: {
@@ -107,9 +112,26 @@ export async function handleUpdateProduct(
         connect: {
           id: categoryID
         }
-      }
+      },
     }
   });
+
+  for ( const tierID of tiersIDS ) {
+
+    await prisma.productTier.deleteMany({
+      where: {
+        productID: updatedProduct.id
+      }
+    });
+
+    await prisma.productTier.createMany({
+      data: {
+        tierID: tierID,
+        productID: updatedProduct.id
+      }
+    });
+
+  }
 
   revalidatePath( DASHBOARD.ROUTES.PRODUCTS );
 
