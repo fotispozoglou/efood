@@ -7,7 +7,9 @@ import { useQuery } from "@tanstack/react-query";
 import { getProductsCategories } from "@/actions/user/products-categories";
 import Modal from "../layout/modal";
 import ProductPreferences from "../products/product-preferences";
-import { getProduct } from "@/actions/user/products";
+import { getProduct, getProductsWithIngredients } from "@/actions/user/products";
+import { CartContext } from "@/context/cart";
+import { useProductsPreferences } from "@/hooks/useProductPreferences";
 
 export type HomeProductsListProps = {
   productsCategories : Prisma.ProductCategoryGetPayload<{ include: { products: true } }>[];
@@ -15,36 +17,38 @@ export type HomeProductsListProps = {
 
 export default function HomeProductsList() {
 
-  const [ productID, setProductID ] = useState< string >( '' );
-  const [ open, setOpen ] = useState( false );
+  const {
+    selectedProduct,
+    productPreferencesOpen,
+    setProductPreferencesOpen,
+    setSelectedProductID,
+    addProduct
+  } = useContext( CartContext );
 
   const { data } = useQuery({ 
     queryKey: ['products-categories'], 
     queryFn: getProductsCategories 
   });
 
-  const { data: productData } = useQuery({
-    queryKey: ['products', productID],
-    enabled: productID.length > 1,
-    queryFn: async () => {
-
-      const data = await getProduct( productID );
-      
-      return data;
-    
-    },
-  });
-
   return (
     <div className="flex flex-col gap-5">
-      {
-        <Modal title={ productData?.product?.name } open={ open } onClose={() => { setOpen(false); }}>
-          <ProductPreferences 
-            product={ productData?.product ?? null } 
-            onSubmit={(p) => {}} 
-          />
-        </Modal>
-      }
+      <Modal title={ selectedProduct?.name } open={ productPreferencesOpen } onClose={() => { setProductPreferencesOpen(false); }}>
+        <ProductPreferences 
+          productAndTiers={ selectedProduct ?? null } 
+          onSubmit={(p) => {
+
+            if ( !selectedProduct ) return;
+
+            addProduct( 
+              selectedProduct, 
+              p.comments ?? '', 
+              p.quantity ?? 1, 
+              p.ingredients ?? []
+            );
+
+          }} 
+        />
+      </Modal>
       {
         data?.productCategories.map(
           ({ id, name, products }) => (
@@ -54,9 +58,9 @@ export default function HomeProductsList() {
               products={ products } 
               onProductClick={( product ) => { 
                 
-                setProductID( product.id ); 
+                setSelectedProductID( product.id ); 
               
-                setOpen( true );
+                setProductPreferencesOpen( true );
               
               }}
             />

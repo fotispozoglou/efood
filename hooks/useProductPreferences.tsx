@@ -1,71 +1,89 @@
-import { getProduct } from "@/actions/user/products";
-import { getProductsCategories } from "@/actions/user/products-categories";
-import { getTiers } from "@/actions/user/tiers";
+import { getIngredients } from "@/actions/user/ingredients";
 import { Prisma } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 
-export type UseProductPreferencesParams = {
-  initialSelectedTiersIDS : string[];
+type PrismaIngredient = Prisma.IngredientGetPayload<{}>;
+
+const populateIngredients = ( allIngredients : PrismaIngredient[], selectedIngredients : string[] ) => {
+
+  return allIngredients.filter( i => selectedIngredients.includes( i.id ) );
+
 };
 
-export const useProductsPreferences = ({  
-  initialSelectedTiersIDS
+export type UseProductPreferencesParams = {
+  initialQuantity : number;
+  initialIngredients : string[];
+  initialDescription : string;
+};
+
+export const useProductsPreferences = ({
+  initialQuantity,
+  initialIngredients,
+  initialDescription,
 } : UseProductPreferencesParams ) => {
 
-  const { data } = useQuery({
-    queryFn: getTiers,
-    queryKey: ['tiers'],
-  });
+  const [ ingredients, setIngredients ] = useState( initialIngredients );
+  const [ quantity, setQuantity ] = useState( initialQuantity );
+  const [ comments, setComments ] = useState( initialDescription );
 
-  const initialSelectedTiers = data?.tiers.filter(t => initialSelectedTiersIDS.includes(t.id));
+  const handleToggleIngredient = ( tierID : string, ingredientID : string ) => {
 
-  const [ selectedTiers, setSelectedTiers ] = useState< Prisma.TierGetPayload<{}>[] >( initialSelectedTiers ?? [] );
-  const [ quantity, setQuantity ] = useState( 1 );
-  const [ comments, setComments ] = useState( "" );
+    const key = `${ tierID }.${ ingredientID }`;
 
-  const toggleTier = ( tierID : string ) => {
+    setIngredients( ingredients => {
 
-    const tierIndex = selectedTiers.findIndex(st => st.id === tierID);
+      const selected = isSelected( tierID, ingredientID );
 
-    if ( tierIndex === -1 ) {
+      const selectedTierIngredients = ingredients.filter(i => i.startsWith( tierID ));
 
-      setSelectedTiers( st => [ ...st, /* NewTier */ ] );
+      if ( selectedTierIngredients.length >= 1 ) {
 
-      return;
+        return [ ...ingredients ];
 
-    }
+      }
 
-    setSelectedTiers( st => st.filter(t => t.id === tierID) );
+      return [ ...ingredients, key ];
 
-  };
-
-  const increaseQuantity = () => {
-
-    setQuantity( q => q + 1 );
+    });
 
   };
 
-  const decreaseQuantity = () => {
+  const isSelected = ( tierID : string, ingredientID : string ) => {
 
-    setQuantity( q => ( q - 1 ) < 1 ? q : q - 1 );
+    const key = `${ tierID }.${ ingredientID }`;
+
+    return ingredients.find(i => i === key) != null;
 
   };
 
-  const handleCommentsChange = ( event : React.ChangeEvent< HTMLTextAreaElement | HTMLInputElement > ) => {
+  const increaseQuantity = ( amount : number = 1 ) => {
 
-    setComments( event.target.value );
+    setQuantity( q => q + amount );
+
+  };
+
+  const decreaseQuantity = ( amount : number = 1 ) => {
+
+    setQuantity( q => q - amount );
+
+  };
+
+  const onCommentsChange = ( e : React.ChangeEvent< HTMLTextAreaElement | HTMLInputElement > ) => {
+
+    setComments( e.target.value );
 
   };
 
   return {
-    selectedTiers,
+    ingredients,
     quantity,
     comments,
+    isSelected,
+    handleToggleIngredient,
     increaseQuantity,
     decreaseQuantity,
-    toggleTier,
-    handleCommentsChange
+    onCommentsChange
   };
 
 };

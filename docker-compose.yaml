@@ -18,6 +18,9 @@ services:
       - ./lib:/app/lib
       - ./types:/app/types
       - ./hooks:/app/hooks
+      - ./dexie:/app/dexie
+      - ./context:/app/context
+      - ./context-provider:/app/context-provider
     restart: always
     env_file:
       - .env

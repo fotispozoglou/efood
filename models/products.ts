@@ -21,5 +21,6 @@ export const UpdateProductSchema = BaseProductSchema.extend({
   tiersIDS: z.array( z.string() ).optional()
 }).merge( HasUUID );
 
+export type BaseProductSchemaType = z.infer< typeof BaseProductSchema >;
 export type CreateProductSchemaType = z.infer< typeof CreateProductSchema >;
 export type UpdateProductSchemaType = z.infer< typeof UpdateProductSchema >;
